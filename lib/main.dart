@@ -1,22 +1,17 @@
-import 'package:sentry_flutter/sentry_flutter.dart';
+//import 'package:expense_app/Excpetion.dart';
+import 'package:expense_app/view/home_view.dart';
+import 'package:expense_app/view/login_view.dart';
+import 'package:expense_app/view/register_view.dart';
+import 'package:expense_app/routes.dart';
+import 'package:expense_app/view/verify_email_view.dart';
+//import 'package:firebase_auth/firebase_auth.dart';
+//import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
 
-import 'package:flutter/cupertino.dart';
-import 'package:goodbye_money/tabs.dart';
+//import 'firebase_options.dart';
 
-Future<void> main() async {
-  await SentryFlutter.init(
-    (options) => {
-      options.dsn =
-          'https://f67869e3983d4e1698f1c092bd880fb9@o1418292.ingest.sentry.io/4504078280556544',
-      options.tracesSampleRate = 1.0,
-      options.attachScreenshot = true,
-    },
-    appRunner: () => runApp(
-      const SentryScreenshotWidget(
-        child: MyApp(),
-      ),
-    ),
-  );
+void main() {
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -25,12 +20,27 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const CupertinoApp(
-      debugShowCheckedModeBanner: false,
-        title: 'Expense Tracker',
-        theme: CupertinoThemeData(
-            primaryColor: Color.fromARGB(255, 41, 141, 255),
-            brightness: Brightness.dark),
-        home: TabsController());
+    return MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        // This is the theme of your application.
+        //
+        // Try running your application with "flutter run". You'll see the
+        // application has a blue toolbar. Then, without quitting the app, try
+        // changing the primarySwatch below to Colors.green and then invoke
+        // "hot reload" (press "r" in the console where you ran "flutter run",
+        // or simply save your changes to "hot reload" in a Flutter IDE).
+        // Notice that the counter didn't reset back to zero; the application
+        // is not restarted.
+        primarySwatch: Colors.blue,
+      ),
+      routes: {
+        loginRoutes: (context) => const LoginView(),
+        registerRoutes: (context) => const RegisterView(),
+        verifyemail: (context) => const VerifyEmailView(),
+        homePageRoutes: (context) => const Homepage()
+      },
+      home: const LoginView(),
+    );
   }
 }

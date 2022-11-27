@@ -38,69 +38,67 @@ class _RegisterViewState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text("Login View"),
-        ),
-        body: Column(
-          children: [
-            TextField(
-              controller: _email,
-              obscureText: false,
-              decoration: const InputDecoration(hintText: "Enter your Email id"),
-              autocorrect: false,
-              keyboardType: TextInputType.emailAddress,
-            ),
-            TextField(
-              controller: _password,
-              obscureText: true,
-              autocorrect: false,
-              decoration: const InputDecoration(hintText: "Enter your Password"),
-            ),
-            TextButton(
-              onPressed: () async {
-                final email = _email.text;
-                final password = _password.text;
-                await Firebase.initializeApp(
-                  options: DefaultFirebaseOptions.currentPlatform,
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Login View"),
+      ),
+      body: Column(
+        children: [
+          TextField(
+            controller: _email,
+            obscureText: false,
+            decoration: const InputDecoration(hintText: "Enter your Email id"),
+            autocorrect: false,
+            keyboardType: TextInputType.emailAddress,
+          ),
+          TextField(
+            controller: _password,
+            obscureText: true,
+            autocorrect: false,
+            decoration: const InputDecoration(hintText: "Enter your Password"),
+          ),
+          TextButton(
+            onPressed: () async {
+              final email = _email.text;
+              final password = _password.text;
+              await Firebase.initializeApp(
+                options: DefaultFirebaseOptions.currentPlatform,
+              );
+              try {
+                await AuthServices.firebase().logIn(
+                  email: email,
+                  password: password,
                 );
-                try {
-                  await AuthServices.firebase().logIn(
-                    email: email,
-                    password: password,
+                final user = AuthServices.firebase().currentUser;
+                if (user?.isEmailVerified ?? false) {
+                  // ignore: use_build_context_synchronously
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                    homePageRoutes,
+                    (route) => false,
                   );
-                  final user = AuthServices.firebase().currentUser;
-                  if (user?.isEmailVerified ?? false) {
-                    // ignore: use_build_context_synchronously
-                    Navigator.of(context).pushNamedAndRemoveUntil(
-                      homePageRoutes,
-                      (route) => false,
-                    );
-                  } else {
-                    // ignore: use_build_context_synchronously
-                    Navigator.of(context).pushNamedAndRemoveUntil(
-                      verifyemail,
-                      (route) => false,
-                    );
-                  }
-                } on WrongPasswordException {
-                  ("Wrong Password");
-                } on UserNotFoundException {
-                  print("user not found");
+                } else {
+                  // ignore: use_build_context_synchronously
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                    verifyemail,
+                    (route) => false,
+                  );
                 }
-              },
-              child: const Text("login"),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context)
-                    .pushNamedAndRemoveUntil(registerRoutes, (route) => false);
-              },
-              child: const Text("Don't have an account? Register here!!"),
-            )
-          ],
-        ),
+              } on WrongPasswordException {
+                ("Wrong Password");
+              } on UserNotFoundException {
+                print("user not found");
+              }
+            },
+            child: const Text("login"),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context)
+                  .pushNamedAndRemoveUntil(registerRoutes, (route) => false);
+            },
+            child: const Text("Don't have an account? Register here!!"),
+          )
+        ],
       ),
     );
   }
